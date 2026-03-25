@@ -38,7 +38,7 @@ def generate_excel_report(
     config: dict,
 ) -> bytes:
     """
-    Generate a formatted Excel report with 6 sheets.
+    Generate a formatted Excel report with 7 sheets.
     Returns the workbook as bytes.
     """
     wb = Workbook()
@@ -47,6 +47,7 @@ def generate_excel_report(
     _write_statistical_analysis(wb, results, metadata)
     _write_risk_model_output(wb, results, config)
     _write_quantitative_analysis(wb, results, metadata)
+    _write_advanced_analysis(wb, results)
     _write_regulatory_report(wb, results)
     _write_raw_data(wb, returns, prices, metadata)
 
@@ -465,6 +466,80 @@ def _write_quantitative_analysis(wb: Workbook, results: dict, metadata: dict):
         ws.cell(row=row, column=3, value=f"{rc_by_class.get(cls, 0)*100:.1f}%")
         row += 1
     _style_data_rows(ws, start_data, row - 1, 3)
+
+
+def _write_advanced_analysis(wb: Workbook, results: dict):
+    """Sheet 5: Advanced Quantitative Analysis."""
+    ws = wb.create_sheet("Advanced Analysis")
+    ws.freeze_panes = "A3"
+
+    ws.merge_cells("A1:F1")
+    ws["A1"].value = "Advanced Quantitative Analysis"
+    ws["A1"].font = Font(bold=True, size=14, color="1F4E79")
+
+    row = 3
+    advanced = results.get("advanced", {}).get("metrics", {})
+
+    # Taylor Series
+    ws.cell(row=row, column=1, value="Taylor Series (Delta-Gamma) Approximation")
+    _style_subheader_row(ws, row, 3)
+    row += 1
+
+    taylor = advanced.get("taylor_series", {})
+    taylor_items = [
+        ("Delta-only VaR", taylor.get("delta_only_var", 0)),
+        ("Delta-Gamma VaR", taylor.get("delta_gamma_var", 0)),
+        ("Gamma Correction", taylor.get("gamma_correction", 0)),
+    ]
+    start_data = row
+    for label, val in taylor_items:
+        ws.cell(row=row, column=1, value=label)
+        ws.cell(row=row, column=2, value=round(val, 2))
+        row += 1
+    _style_data_rows(ws, start_data, row - 1, 2)
+
+    # Laplace Transforms
+    row += 1
+    ws.cell(row=row, column=1, value="Laplace Transforms — Aggregate Loss Modelling")
+    _style_subheader_row(ws, row, 3)
+    row += 1
+
+    laplace = advanced.get("laplace_transforms", {})
+    laplace_items = [
+        ("Expected Loss (E[S])", laplace.get("expected_loss", 0)),
+        ("Aggregate VaR (95%)", laplace.get("aggregate_var_95", 0)),
+        ("Aggregate VaR (99%)", laplace.get("aggregate_var_99", 0)),
+        ("Aggregate ES (95%)", laplace.get("aggregate_es_95", 0)),
+        ("Aggregate ES (99%)", laplace.get("aggregate_es_99", 0)),
+    ]
+    start_data = row
+    for label, val in laplace_items:
+        ws.cell(row=row, column=1, value=label)
+        ws.cell(row=row, column=2, value=round(val, 2))
+        row += 1
+    _style_data_rows(ws, start_data, row - 1, 2)
+
+    # EVT / GPD
+    row += 1
+    ws.cell(row=row, column=1, value="Extreme Value Theory (Peaks-Over-Threshold / GPD)")
+    _style_subheader_row(ws, row, 3)
+    row += 1
+
+    evt = advanced.get("evt_gpd", {})
+    evt_items = [
+        ("GPD Shape Parameter (xi)", evt.get("gpd_shape_xi", 0)),
+        ("GPD Scale Parameter (beta)", evt.get("gpd_scale_beta", 0)),
+        ("Threshold (u)", evt.get("threshold", 0)),
+        ("Number of Exceedances", evt.get("n_exceedances", 0)),
+        ("Tail VaR (99%)", evt.get("tail_var_99", 0)),
+        ("Tail ES (99%)", evt.get("tail_es_99", 0)),
+    ]
+    start_data = row
+    for label, val in evt_items:
+        ws.cell(row=row, column=1, value=label)
+        ws.cell(row=row, column=2, value=round(val, 4))
+        row += 1
+    _style_data_rows(ws, start_data, row - 1, 2)
 
 
 def _write_regulatory_report(wb: Workbook, results: dict):

@@ -5,6 +5,7 @@ import DistributionChart from './DistributionChart';
 import PCAChart from './PCAChart';
 import ClusterMap from './ClusterMap';
 import RegulatoryPanel from './RegulatoryPanel';
+import AdvancedPanel from './AdvancedPanel';
 
 interface DashboardGridProps {
   results: AnalysisResults | undefined;
@@ -30,6 +31,9 @@ export default function DashboardGrid({ results }: DashboardGridProps) {
         <PCAChart data={results?.pca} />
         <ClusterMap data={results?.clustering} />
       </div>
+
+      {/* Advanced Techniques - full width */}
+      <AdvancedPanel data={results?.advanced} />
 
       {/* Regulatory Panel - full width */}
       <RegulatoryPanel data={results?.regulatory} />

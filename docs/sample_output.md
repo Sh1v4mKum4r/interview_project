@@ -73,7 +73,17 @@ You'll see four key metrics:
 
 This tells a portfolio manager: if you want to diversify, add assets from different clusters."
 
-### 6. Regulatory Compliance Panel (Bottom)
+### 6. Advanced Techniques (Full Width)
+
+"This section demonstrates sophisticated quantitative modelling beyond standard risk metrics:
+
+- **Taylor Series (Delta-Gamma)** — 'For our derivatives portfolio, we use second-order approximations. Standard Delta-only VaR is ~$45,000, but when we add the Gamma term to account for convexity, the VaR increases to ~$52,000. This $7,000 Gamma correction is critical for option portfolios.'
+
+- **Laplace Transforms (Aggregate Loss)** — 'We model aggregate credit losses as a compound Poisson process. This shows the expected annual loss is about $500,000, but the 99% aggregate VaR is over $1.2M. This helps us set aside capital for extreme loss events.'
+
+- **Extreme Value Theory (EVT/GPD)** — 'We fit a Generalized Pareto Distribution to the 10% worst losses. The shape parameter (ξ) of 0.15 confirms fat tails. Notice the EVT VaR is 15-20% higher than the normal VaR, showing why the normal distribution is insufficient for tail risk.'"
+
+### 7. Regulatory Compliance Panel (Bottom)
 
 "The traffic-light panel shows Basel III/IV compliance:
 
